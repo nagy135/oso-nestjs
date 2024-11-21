@@ -34,12 +34,12 @@ export class ProjectsController {
     const actor = {
       type: 'User',
       id: req.user.name,
-    };
+    } as const;
 
     const resource = {
       type: 'Project',
       id: project.name,
-    };
+    } as const;
 
     if (
       !(await this.osoService.getInstance().authorize(actor, 'view', resource))
