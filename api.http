@@ -1,3 +1,30 @@
 # @name get-all-users
 GET http://localhost:3000/users
 
+###
+
+# @name get-all-projects
+GET http://localhost:3000/projects
+
+###
+
+# @name get-all-organizations
+GET http://localhost:3000/organizations
+
+###
+
+# @name get-project
+GET http://localhost:3000/projects/1
+
+### 
+
+# @name login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "username": "Viktor",
+  "password": "123"
+}
+
+
