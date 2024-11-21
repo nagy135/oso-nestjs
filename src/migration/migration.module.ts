@@ -1,29 +1,14 @@
 import { Module, OnModuleInit } from '@nestjs/common';
 import { MigrationService } from './migration.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/schemas/user';
-import { Organization, OrganizationSchema } from 'src/schemas/organization';
-import { Project, ProjectSchema } from 'src/schemas/project';
+import { AuthModule } from 'src/auth/auth.module';
+import { UsersModule } from 'src/users/users.module';
+import { OrganizationsModule } from 'src/organizations/organizations.module';
+import { ProjectsModule } from 'src/projects/projects.module';
 
 @Module({
   providers: [MigrationService],
-  exports: [MigrationService, MongooseModule],
-  imports: [
-    MongooseModule.forFeature([
-      {
-        name: User.name,
-        schema: UserSchema,
-      },
-      {
-        name: Organization.name,
-        schema: OrganizationSchema,
-      },
-      {
-        name: Project.name,
-        schema: ProjectSchema,
-      },
-    ]),
-  ],
+  exports: [MigrationService],
+  imports: [AuthModule, UsersModule, OrganizationsModule, ProjectsModule],
 })
 export class MigrationModule implements OnModuleInit {
   constructor(private readonly migrationService: MigrationService) {}

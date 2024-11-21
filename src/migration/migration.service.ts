@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { OsoService } from 'src/auth/oso.service';
 import { Organization } from 'src/schemas/organization';
 import { Project } from 'src/schemas/project';
 import { User } from 'src/schemas/user';
@@ -11,7 +12,10 @@ export class MigrationService {
     @InjectModel(User.name) private readonly userModel: Model<User>,
     @InjectModel(Organization.name)
     private readonly organizationModel: Model<Organization>,
-    @InjectModel(Project.name) private readonly projectModel: Model<Project>,
+    @InjectModel(Project.name)
+    private readonly projectModel: Model<Project>,
+
+    private readonly osoService: OsoService,
   ) {}
   async runMigrations() {
     Logger.log('Running migrations...');
@@ -36,14 +40,31 @@ export class MigrationService {
       },
     ]);
 
-    await this.userModel.create({
+    const user = await this.userModel.create({
       name: 'Viktor',
       email: 'viktor@gmail.com',
       password: '123',
       organizations,
     });
 
-    await this.projectModel.create({
+    const osoInstance = this.osoService.getInstance();
+
+    organizations.forEach((e) =>
+      osoInstance.insert([
+        'has_role',
+        {
+          type: 'User',
+          id: user.name,
+        },
+        'owner',
+        {
+          type: 'Organization',
+          id: e.name,
+        },
+      ]),
+    );
+
+    const project = await this.projectModel.create({
       name: 'Viktor Project',
       description: 'Viktor Project Description',
       organizationId: organizations[0]._id,
@@ -52,6 +73,19 @@ export class MigrationService {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
+
+    osoInstance.insert([
+      'has_relation',
+      {
+        type: 'Project',
+        id: project.name,
+      },
+      'project_container',
+      {
+        type: 'Organization',
+        id: organizations[0].name,
+      },
+    ]);
     Logger.log('Migrations completed!');
   }
 }
