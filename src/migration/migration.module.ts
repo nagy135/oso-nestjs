@@ -7,7 +7,7 @@ import { Project, ProjectSchema } from 'src/schemas/project';
 
 @Module({
   providers: [MigrationService],
-  exports: [MigrationService],
+  exports: [MigrationService, MongooseModule],
   imports: [
     MongooseModule.forFeature([
       {
