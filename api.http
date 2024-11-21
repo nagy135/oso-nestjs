@@ -1,0 +1,3 @@
+# @name get-all-users
+GET http://localhost:3000/users
+
