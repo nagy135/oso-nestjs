@@ -14,7 +14,8 @@ GET http://localhost:3000/organizations
 ###
 
 # @name get-project
-GET http://localhost:3000/projects/1
+GET http://localhost:3000/projects/673f39de96721779424c0082
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiVmlrdG9yIiwic3ViIjoiNjczZjM5ZGU5NjcyMTc3OTQyNGMwMDgwIiwiaWF0IjoxNzMyMTk3NTk5LCJleHAiOjE3MzIyMDM1OTl9.q6tb_I-umf33iLvAnIWsyjw0Ga_cp9U0_8Dmi8eYhpc
 
 ### 
 
