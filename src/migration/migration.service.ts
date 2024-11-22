@@ -86,6 +86,26 @@ export class MigrationService {
         id: organizations[0].name,
       },
     ]);
+
+    const anotherOrganization = await this.organizationModel.create({
+      name: 'Another Organization',
+      description: "Viktor's Other Organization",
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    // project that is not owned by Viktor
+    await this.projectModel.create({
+      name: 'Not Viktor Project',
+      description: 'Not Viktor Project Description',
+      organizationId: anotherOrganization._id,
+      status: 'PLANNING',
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
     Logger.log('Migrations completed!');
   }
 }

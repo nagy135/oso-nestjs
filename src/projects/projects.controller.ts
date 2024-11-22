@@ -11,6 +11,7 @@ import { ProjectsService } from './projects.service';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { RequestWithUser } from 'src/types';
 import { OsoService } from 'src/auth/oso.service';
+import { typedVar } from 'oso-cloud';
 
 @Controller('projects')
 export class ProjectsController {
@@ -20,9 +21,26 @@ export class ProjectsController {
   ) {}
 
   @Get()
-  getProjects() {
-    console.log('getProjects');
-    return this.projectsService.findAll();
+  @UseGuards(AuthGuard)
+  async getProjects(@Request() req: RequestWithUser) {
+    const projects = await this.projectsService.findAll();
+    const actor = {
+      type: 'User',
+      id: req.user.name,
+    } as const;
+
+    const projectTypedVar = typedVar('Project');
+
+    const allowedProjects = await this.osoService
+      .getInstance()
+      .buildQuery(['allow', actor, 'view', projectTypedVar])
+      .in(
+        projectTypedVar,
+        projects.map((e) => e.name),
+      )
+      .evaluate(projectTypedVar);
+
+    return projects.filter((e) => allowedProjects.includes(e.name));
   }
 
   @Get(':id')
