@@ -23,7 +23,6 @@ export class ProjectsController {
   @Get()
   @UseGuards(AuthGuard)
   async getProjects(@Request() req: RequestWithUser) {
-    const projects = await this.projectsService.findAll();
     const actor = {
       type: 'User',
       id: req.user.name,
@@ -34,13 +33,9 @@ export class ProjectsController {
     const allowedProjects = await this.osoService
       .getInstance()
       .buildQuery(['allow', actor, 'view', projectTypedVar])
-      .in(
-        projectTypedVar,
-        projects.map((e) => e.name),
-      )
       .evaluate(projectTypedVar);
 
-    return projects.filter((e) => allowedProjects.includes(e.name));
+    return this.projectsService.findByNameArray(allowedProjects);
   }
 
   @Get(':id')

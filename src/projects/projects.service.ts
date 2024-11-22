@@ -12,6 +12,10 @@ export class ProjectsService {
     return await this.projectModel.find();
   }
 
+  async findByNameArray(names: string[]): Promise<Project[]> {
+    return await this.projectModel.find({ name: { $in: names } });
+  }
+
   async findById(id: string): Promise<Project | null> {
     return await this.projectModel.findOne({ _id: id });
   }
